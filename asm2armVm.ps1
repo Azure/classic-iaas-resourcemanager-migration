@@ -152,7 +152,7 @@ function New-CopyVmDisksScript
         $imperativeScript += "`$StorageAccountName = '{0}'" -f $StorageAccountName
         $imperativeScript += "`$armStorageAccount = Get-AzureRmStorageAccount | Where-Object {`$_.StorageAccountName -eq `$StorageAccountName}"
 
-		$imperativeScript += "`$destinationAccountKey = (Get-AzureRmStorageAccountKey -Name `$StorageAccountName -ResourceGroupName `$armStorageAccount.ResourceGroupName).Key1"
+		$imperativeScript += "`$destinationAccountKey = (Get-AzureRmStorageAccountKey -Name `$StorageAccountName -ResourceGroupName `$armStorageAccount.ResourceGroupName)[0].Value"
 		$imperativeScript += "`$destinationContext = New-AzureStorageContext -StorageAccountName `$StorageAccountName  -StorageAccountKey `$destinationAccountKey"
 		
 		$previousStorageAccountName = ''
