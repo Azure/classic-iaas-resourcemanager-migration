@@ -51,6 +51,50 @@ function New-VirtualNetworkSubnet
     return $subnet
 }
 
+function New-NetworkSecurityGroupResource
+{
+    Param
+    (
+        $Name,
+        $Location,
+        [Microsoft.WindowsAzure.Commands.ServiceManagement.Model.PersistentVMRoleContext]
+		$VM
+    )
+
+    # Report all load balanced endpoints to the user so that they know that we do not currently handle these endpoints
+    $VM | Get-AzureEndpoint | Where-Object {$_.LBSetName -ne $null} | ForEach-Object { Write-Warning $("Endpoint {0} is skipped as load balanced endpoints are NOT currently supported by this cmdlet. You can still manually recreate this endpoint in ARM using the following details: {1}" -f $_.Name, $(ConvertTo-Json $_)) }
+
+    # Walk through all endpoints and filter those that are assigned to a load balancer set (we do not currently handle these endpoints)
+    $endpoints =  $VM | Get-AzureEndpoint | Where-Object {$_.LBSetName -eq $null}
+    
+    # Start translating endpoints to NSG security rules
+    $securityRules = @()
+    $priority = 1000
+
+    foreach ($endpoint in $endpoints)
+    {
+        $securityRules += @{'name' = $endpoint.Name; 
+                            'properties' = @{ 'priority'= $priority;
+                                              'sourceAddressPrefix' = '*';
+                                              'protocol' = $endpoint.Protocol;
+                                              'destinationPortRange' = $endpoint.LocalPort;
+                                              'access' = 'Allow';
+                                              'direction' = 'inbound';
+                                              'sourcePortRange' = '*';
+                                              'destinationAddressPrefix' = '*'
+                                        }}
+        $priority += 500
+    }
+
+    $createProperties = @{'securityRules' = $securityRules}
+        
+    $resource = New-ResourceTemplate -Type "Microsoft.Network/networkSecurityGroups" -Name $Name `
+            -Location $Location -ApiVersion '2015-06-15' -Properties $createProperties
+
+    return $resource
+}
+
+
 function New-NetworkInterfaceResource
 {
     Param
@@ -59,6 +103,8 @@ function New-NetworkInterfaceResource
         $Location,
         [string]
         $SubnetReference,
+        [string]
+        $NsgReference,
         [string]
         $PrivateIpAddress,
         [string]
@@ -88,8 +134,9 @@ function New-NetworkInterfaceResource
     }
 
     $ipConfigName = "{0}_config1" -f $Name
-    $createProperties = @{'ipConfigurations' =  @(@{'name' =  $ipConfigName; 'properties' = $ipConfigurations;})}
-
+    $createProperties = @{'ipConfigurations' =  @(@{'name' =  $ipConfigName; 'properties' = $ipConfigurations;}); 
+                           'networkSecurityGroup' = @{'id' = $NsgReference}}
+    
     $resource = New-ResourceTemplate -Type "Microsoft.Network/networkInterfaces" -Name $Name `
         -Location $Location -ApiVersion $Global:apiVersion -Properties $createProperties -DependsOn $Dependencies
 
