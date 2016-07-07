@@ -71,6 +71,12 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [string]
@@ -83,6 +89,12 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [string]
@@ -95,6 +107,12 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [Microsoft.WindowsAzure.Commands.ServiceManagement.Model.PersistentVMRoleContext]
@@ -113,10 +131,74 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [string]
         $ResourceGroupName,
+
+        #Name of the destination VNet the deployment is going to be placed into
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $DestinationVnetName,
+
+         #Name of the destination subnet the deployment is going to be placed into
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
+        [ValidateNotNull()]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $DestinationSubnetName,
+
+        #Name of the resource group containing the destination Vnet
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
+        [string]
+        $DestinationVnetRGName,
 
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names no custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names no custom certificate with files generated no deploy')]
@@ -130,8 +212,25 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [ValidateSet("NewDisks", "CopyDisks")]
         $DiskAction,
+
+        #Destination Storage Account, if none provided a new storage account will be created
+        [string]
+        [Parameter(Mandatory=$false)]
+        $DestinationStorageAccountName,
 
         # In case the VM uses a custom WinRM certificate, it needs to be uploaded to KeyVault
         # Please provide KeyVault resource name
@@ -141,6 +240,12 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [string]
@@ -154,6 +259,12 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [string]
@@ -167,6 +278,12 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
@@ -187,6 +304,12 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [ValidateScript({
@@ -208,6 +331,14 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object no custom certificate with files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
         [string]
@@ -221,7 +352,15 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$false, ParameterSetName='VM object no custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$false, ParameterSetName='VM object no custom certificate with files generated and deploy')]
         [Parameter(Mandatory=$false, ParameterSetName='VM object with custom certificate with files generated no deploy')]
-        [Parameter(Mandatory=$false, ParameterSetName='VM object with custom certificate with files generated and deploy')]     
+        [Parameter(Mandatory=$false, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated no deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]     
         [switch]
         $AppendTimeStampForFiles,
 
@@ -234,6 +373,14 @@ function Add-AzureSMVmToRM
         [Parameter(Mandatory=$true, ParameterSetName='VM object no custom certificate with files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='VM object with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet with custom certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object no custom custom vnet certificate with files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate no files generated and deploy')]
+        [Parameter(Mandatory=$true, ParameterSetName='VM object with custom custom vnet certificate with files generated and deploy')]
         [switch]
         $Deploy
     )
@@ -280,6 +427,44 @@ function Add-AzureSMVmToRM
     $cloudService = Get-AzureService -ServiceName $VM.ServiceName
     $location = $cloudService.Location
 
+    $ResourceGroup = Get-AzureRmResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
+    
+    if ($DestinationVnetName)
+    {
+        try
+        {
+            $destinationVnet = Get-AzureRmVirtualNetwork -Name $DestinationVnetName -ResourceGroupName $DestinationVnetRGName
+            if ($ResourceGroup -ne $null -and $destinationVnet.Location -ne $ResourceGroup.Location)
+            {
+                throw ("Specified destination Vnet $DestinationVnetName not in the same region as destination resource group $ResourceGroupName")
+            }
+            $destinationSubnet = Get-AzureRmVirtualNetworkSubnetConfig -VirtualNetwork $destinationVnet | ? {$_.Name -eq $DestinationSubnetName}
+            if($destinationSubnet -eq $null)
+            {
+                throw ("Specified destination subnet $DestinationSubnetName was not found in Vnet $DestinationVnetName")
+            }
+        }
+        catch{
+            throw ("Specified destination Vnet was not found")
+        }
+
+    }
+    if ($DestinationStorageAccountName)
+    {
+        $DesinationStorageAccount = Get-AzureRmStorageAccount | Where-Object{$_.StorageAccountName -eq "workstations6542"}
+        if ($DesinationStorageAccount -ne $null)
+        {
+            if ($ResourceGroup -ne $null -and $DesinationStorageAccount.Location -ne $ResourceGroup.Location)
+            {
+                throw ("Specified destination storage account $DestinationStorageAccountName is not in the same region as $ResourceGroupName")
+            }
+        }
+        else
+        {
+            throw ("Specified destination storage account $DestinationStorageAccountName was not found")
+        }
+    }
+
     $currentRmContext = Get-AzureRmContext -ErrorAction SilentlyContinue
     if ($currentRmContext -eq $null)
     {
@@ -320,9 +505,17 @@ function Add-AzureSMVmToRM
     # This varibale gathers all resources that form a setup phase. These include storage accounts, virtual networks, availability sets.
     $setupResources = @()
     
+    #Check to see if a destination storage account was already specified
+    if ($DestinationStorageAccountName -ne $null)
+    {
+        $storageAccountName = $DestinationStorageAccountName
+    }
     # Generate the storage account name for the ARM deployments. This function will test the existence of the account, and will generate a new name 
     # if the storage account exists on a different location.
-    $storageAccountName = Get-StorageAccountName -NamePrefix $canonicalSubscriptionName  -Location $location
+    else
+    {
+        $storageAccountName = Get-StorageAccountName -NamePrefix $canonicalSubscriptionName  -Location $location
+    }
 
     # Check if we need to create storage account resource. 
     if (-not $(Test-AzureName -Storage $storageAccountName))
@@ -334,6 +527,16 @@ function Add-AzureSMVmToRM
         $storageAccount = Get-AzureStorageAccount -StorageAccountName $vmOsDiskStorageAccountName
         $storageAccountResource = New-StorageAccountResource -Name $storageAccountName -Location $resourceLocation -StorageAccountType $storageAccount.AccountType
         $setupResources += $storageAccountResource
+    }
+    #Otherwise use the existing storage account provided
+    else
+    {
+        $vmOsDiskStorageAccountName = ([System.Uri]$VM.VM.OSVirtualHardDisk.MediaLink).Host.Split('.')[0]
+
+        $storageAccount = Get-AzureStorageAccount -StorageAccountName $vmOsDiskStorageAccountName
+
+        $storageAccountResource = New-StorageAccountResource -Name $DestinationStorageAccountName -Location $resourceLocation -storageAccountType $storageAccount.AccountType
+        $setupResources += $DesinationStorageAccount
     }
     
     # Virtual network resource
@@ -370,7 +573,13 @@ function Add-AzureSMVmToRM
         }
     }
     
-	$currentVnet = Get-AzureRmVirtualNetwork -Name $vnetName -ResourceGroupName $ResourceGroupName -ErrorAction SilentlyContinue
+    if ($DestinationVnetName) {
+        $currentVnet = Get-AzureRmVirtualNetwork -Name $DestinationVnetName -ResourceGroupName $DestinationVnetRGName
+    }
+    else{
+    	$currentVnet = Get-AzureRmVirtualNetwork -Name $vnetName -ResourceGroupName $ResourceGroupName -ErrorAction SilentlyContinue
+    }
+
     $subnets = @()
     $vnetAddressSpaces = @()
     
@@ -409,68 +618,78 @@ function Add-AzureSMVmToRM
         # We need to create the exact copy of the existing virtual network specification, and add a new subnet if the target
         # subnet does not exist.
 
-        $subnetExists = $false
-        foreach ($subnet in $currentVnet.Subnets)
+        if ($DestinationVnetName)
         {
-            $subnetExists = $($subnet.AddressPrefix -eq $classicSubnet.AddressPrefix -and $subnet.Name -eq $classicSubnet.Name)
-            if ($subnetExists)
+            $vnetName = $DestinationVnetName
+            $vnetAddressSpaces += $destinationVnet.AddressSpace.AddressPrefixes
+            $subnets += New-VirtualNetworkSubnet -Name $DestinationSubnetName -AddressPrefix $destinationSubnet.AddressPrefix
+        }
+        else
+        {
+
+            $subnetExists = $false
+            foreach ($subnet in $currentVnet.Subnets)
             {
+                $subnetExists = $($subnet.AddressPrefix -eq $classicSubnet.AddressPrefix -and $subnet.Name -eq $classicSubnet.Name)
+                if ($subnetExists)
+                {
+                    foreach ($addressPrefix in $currentVnet.AddressSpace.AddressPrefixes)
+                    {
+                        if (Test-SubnetInAddressSpace -SubnetPrefix $classicSubnet.AddressPrefix -AddressSpace $addressPrefix)
+                        {
+                            $vnetAddressSpaces += $addressPrefix
+                        }
+                    }
+
+                    $vmSubnetName = $classicSubnet.Name 
+                }
+                Write-Verbose $("Found a matching subnet, adding a resource definition for '{0}' subnet" -f $subnet.Name)
+                $subnets += New-VirtualNetworkSubnet -Name $subnet.Name -AddressPrefix $subnet.AddressPrefix
+            }
+
+            if (-not $subnetExists)
+            {       
+                # We could not find a suitable subnet. This could be because a new VM that could be added after an initial
+                # cloning process for another VM. Let's find a suitable address space and add a new subnet
+                $existingSubnets = @()
+                $currentVnet.Subnets | ForEach-Object {$existingSubnets += $_.AddressPrefix}
+
+                $subnetAddressSpace = Get-AvailableAddressSpace $existingSubnets
+
                 foreach ($addressPrefix in $currentVnet.AddressSpace.AddressPrefixes)
                 {
-                    if (Test-SubnetInAddressSpace -SubnetPrefix $classicSubnet.AddressPrefix -AddressSpace $addressPrefix)
+                    if (Test-SubnetInAddressSpace -SubnetPrefix $subnetAddressSpace -AddressSpace $addressPrefix)
                     {
                         $vnetAddressSpaces += $addressPrefix
                     }
                 }
 
-                $vmSubnetName = $classicSubnet.Name 
-            }
-            Write-Verbose $("Found a matching subnet, adding a resource definition for '{0}' subnet" -f $subnet.Name)
-            $subnets += New-VirtualNetworkSubnet -Name $subnet.Name -AddressPrefix $subnet.AddressPrefix
-        }
+                $canonicalServiceName = Get-CanonicalString $vm.ServiceName
+                $canonicalVmName = Get-CanonicalString $vm.Name
 
-        if (-not $subnetExists)
-        {       
-            # We could not find a suitable subnet. This could be because a new VM that could be added after an initial
-            # cloning process for another VM. Let's find a suitable address space and add a new subnet
-            $existingSubnets = @()
-            $currentVnet.Subnets | ForEach-Object {$existingSubnets += $_.AddressPrefix}
-
-            $subnetAddressSpace = Get-AvailableAddressSpace $existingSubnets
-
-            foreach ($addressPrefix in $currentVnet.AddressSpace.AddressPrefixes)
-            {
-                if (Test-SubnetInAddressSpace -SubnetPrefix $subnetAddressSpace -AddressSpace $addressPrefix)
-                {
-                    $vnetAddressSpaces += $addressPrefix
-                }
-            }
-
-            $canonicalServiceName = Get-CanonicalString $vm.ServiceName
-            $canonicalVmName = Get-CanonicalString $vm.Name
-
-            $subnetName = 'subnet-{0}-{1}' -f $canonicalServiceName, $canonicalVmName            
-            $increment = 0
-            do {
-                $newName = $true
-                foreach($subnet in $currentVnet.Subnets)
-                {
-                    if ($newName)                    
+                $subnetName = 'subnet-{0}-{1}' -f $canonicalServiceName, $canonicalVmName            
+                $increment = 0
+                do {
+                    $newName = $true
+                    foreach($subnet in $currentVnet.Subnets)
                     {
-                        $newName = $subnetName -ne $subnet.Name
+                        if ($newName)                    
+                        {
+                            $newName = $subnetName -ne $subnet.Name
+                        }
                     }
-                }
-                if (-not $newName)
-                {
-                    $subnetName = "{0}-{1:00}" -f $subnetName, $increment
-                    $increment += 1
-                }
-            } until ($newName)
+                    if (-not $newName)
+                    {
+                        $subnetName = "{0}-{1:00}" -f $subnetName, $increment
+                        $increment += 1
+                    }
+                } until ($newName)
 
-            Write-Verbose $("Could not find a matching subnet within the existing virtual network, adding the subnet '{0}'" -f $subnetName)
+                Write-Verbose $("Could not find a matching subnet within the existing virtual network, adding the subnet '{0}'" -f $subnetName)
 
-            $subnets += New-VirtualNetworkSubnet -Name $subnetName -AddressPrefix $subnetAddressSpace
-            $vmSubnetName = $subnetName
+                $subnets += New-VirtualNetworkSubnet -Name $subnetName -AddressPrefix $subnetAddressSpace
+                $vmSubnetName = $subnetName
+            }
         }
     }
 
@@ -497,7 +716,7 @@ function Add-AzureSMVmToRM
 
     $armDnsName = Get-AzureDnsName -ServiceName $ServiceName -Location $location
     $publicIPAddressResource = New-PublicIpAddressResource -Name $ipAddressName -Location $resourceLocation `
-        -AllocationMethod 'Dynamic' -DnsName $armDnsName
+        -AllocationMethod 'Dynamic' -DnsName $armDnsName.ToLower()
     $resources += $publicIPAddressResource
     
     # NIC resource
@@ -508,6 +727,10 @@ function Add-AzureSMVmToRM
 
     Write-Verbose $("Adding a resource definition for '{0}' network interface" -f $nicName)
 
+    if($DestinationVnetName)
+    {
+        $privateIpAddress = $null
+    }
     $dependencies = @($ipAddressDependency)
     $nicResource = New-NetworkInterfaceResource -Name $nicName -Location $resourceLocation -PublicIpAddressName $ipAddressName -PrivateIpAddress $privateIpAddress -SubnetReference $subnetRef -Dependencies $dependencies
     $resources += $nicResource
@@ -581,7 +804,7 @@ function Add-AzureSMVmToRM
         
         New-AzureSmToRMDeployment -ResourceGroupName $ResourceGroupName -Location $location -ServiceName $vm.ServiceName -Name $vm.Name `
             -SetupTemplateFileName $setupTemplateFileName -ParametersFileName $parametersFileName -DeployTemplateFileName $deployTemplateFileName `
-            -CopyDisksScript $copyDisksScriptFileName -ImperativeScript $imperativeScript
+            -CopyDisksScript $copyDisksScriptFileName -ImperativeScript $imperativeScript -StorageAccountName $storageAccountName
     } else {
             $deployCommandletCall = 'New-AzureSmToRMDeployment -ResourceGroupName ''{0}'' -Location ''{1}'' -ServiceName ''{2}'' -Name ''{3}'' -StorageAccountName ''{4}''' `
                             -f $ResourceGroupName, $location, $vm.ServiceName, $vm.Name, $storageAccountName
