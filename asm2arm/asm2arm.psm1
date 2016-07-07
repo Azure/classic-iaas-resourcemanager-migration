@@ -56,6 +56,10 @@
     <String[]> -WinRmCertificateName <String> -Deploy [<CommonParameters>]
 .EXAMPLE    
     Add-AzureSMVmToRM -VM <PersistentVMRoleContext> -ResourceGroupName <String> -DiskAction <Object> -OutputFileFolder <String> [-AppendTimeStampForFiles] -Deploy [<CommonParameters>]
+
+.EXAMPLE
+    Deploy a VM to an existing Vnet and storage account
+    Add-AzureSMVmToRM -VM <PersistentVMRoleContext> -ResourceGroupName <String> -DestinationVnetName <String> -DestinationVnetRGName <String> -DestinationSubnetName <String> -DiskAction <object> -DestinationStorageAccountName <String> -OutputFileFolder <String> -AppendTimeStampForFiles -Deploy [<CommonParameters>]
 #>
 function Add-AzureSMVmToRM
 {
@@ -148,7 +152,7 @@ function Add-AzureSMVmToRM
         [string]
         $ResourceGroupName,
 
-        #Name of the destination VNet the deployment is going to be placed into
+        #Name of the destination VNet the deployment is going to be placed into (Dynamic IP Address only)
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate no files generated and deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated no deploy')]
         [Parameter(Mandatory=$true, ParameterSetName='Service and VM names custom vnet no custom certificate with files generated and deploy')]
@@ -445,13 +449,13 @@ function Add-AzureSMVmToRM
             }
         }
         catch{
-            throw ("Specified destination Vnet was not found")
+            throw ($_.Exception.Message)
         }
 
     }
     if ($DestinationStorageAccountName)
     {
-        $DesinationStorageAccount = Get-AzureRmStorageAccount | Where-Object{$_.StorageAccountName -eq "workstations6542"}
+        $DesinationStorageAccount = Get-AzureRmStorageAccount | Where-Object{$_.StorageAccountName -eq $DestinationStorageAccountName}
         if ($DesinationStorageAccount -ne $null)
         {
             if ($ResourceGroup -ne $null -and $DesinationStorageAccount.Location -ne $ResourceGroup.Location)
@@ -506,7 +510,7 @@ function Add-AzureSMVmToRM
     $setupResources = @()
     
     #Check to see if a destination storage account was already specified
-    if ($DestinationStorageAccountName -ne $null)
+    if ($DestinationStorageAccountName)
     {
         $storageAccountName = $DestinationStorageAccountName
     }
@@ -531,12 +535,14 @@ function Add-AzureSMVmToRM
     #Otherwise use the existing storage account provided
     else
     {
+        Write-Verbose $("Using the submitted storage account '{0}'" -f $DestinationStorageAccountName)
         $vmOsDiskStorageAccountName = ([System.Uri]$VM.VM.OSVirtualHardDisk.MediaLink).Host.Split('.')[0]
 
         $storageAccount = Get-AzureStorageAccount -StorageAccountName $vmOsDiskStorageAccountName
 
         $storageAccountResource = New-StorageAccountResource -Name $DestinationStorageAccountName -Location $resourceLocation -storageAccountType $storageAccount.AccountType
-        $setupResources += $DesinationStorageAccount
+        #Since Account already exists we don't need to add to setup resources
+        #$setupResources += $storageAccountResource
     }
     
     # Virtual network resource
@@ -620,9 +626,11 @@ function Add-AzureSMVmToRM
 
         if ($DestinationVnetName)
         {
+            Write-Verbose $("DestinationVnet '{0}' is being used for subnet selection" -f $DestinationVnetName)
             $vnetName = $DestinationVnetName
             $vnetAddressSpaces += $destinationVnet.AddressSpace.AddressPrefixes
             $subnets += New-VirtualNetworkSubnet -Name $DestinationSubnetName -AddressPrefix $destinationSubnet.AddressPrefix
+            $vmSubnetName = $DestinationSubnetName
         }
         else
         {
@@ -695,8 +703,10 @@ function Add-AzureSMVmToRM
 
     Write-Verbose $("Adding a resource definition for '{0}' virtual network" -f $vnetName)
     $vnetResource = New-VirtualNetworkResource -Name $vnetName -Location $resourceLocation -AddressSpacePrefixes $vnetAddressSpaces -Subnets $subnets
-    $setupResources += $vnetResource
-
+    if(-not $DestinationVnetName)
+    {
+        $setupResources += $vnetResource
+    }
     # Availability set resource
     if ($VM.AvailabilitySetName)
     {
