@@ -278,7 +278,7 @@ Send the customer the **MetadataExtract.zip** file containing the PowerShell scr
 
 ### NSG Bindings
 
-To extract NSGs and rules, first modify the script **NSG-Bindings.ps1** with the subnets from the vNet to be migrated. Follow the example in the PowerShell script. There is no API to retrieve the ASM subnets, and the subnet names are needed to query and see which NSGs are associated with each subnet. The subnet names can be obtained from the exported network config file.
+To extract NSGs and rules, execute the script **NSG-Bindings.ps1** and confirm which subnet you want to include in migration.
 
 ### AsmMetadataParser
 
